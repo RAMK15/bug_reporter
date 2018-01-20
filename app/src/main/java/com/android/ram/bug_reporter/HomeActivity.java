@@ -41,7 +41,7 @@ public class HomeActivity extends AppCompatActivity
         //b=(Button) findViewById(R.id.test_button);
         //t=(TextView)findViewById(R.id.textView2);
         setSupportActionBar(toolbar);
-        Toast.makeText(HomeActivity.this,"dsfjbjksdbhjebfhje",Toast.LENGTH_LONG);
+        //Toast.makeText(HomeActivity.this,"dsfjbjksdbhjebfhje",Toast.LENGTH_LONG);
         final PackageManager pm = getPackageManager();
         List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
         //String s="";
@@ -59,8 +59,11 @@ public class HomeActivity extends AppCompatActivity
         filelist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i=getPackageManager().getLaunchIntentForPackage(name[position]);
-                startActivity(i);
+                Intent intent=new Intent(HomeActivity.this,AnotherAppAndOverlayService.class);
+                intent.putExtra("packagename",name[position]);
+                startService(intent);
+                //Intent i=getPackageManager().getLaunchIntentForPackage(name[position]);
+                //startActivity(i);
             }
         });
 
