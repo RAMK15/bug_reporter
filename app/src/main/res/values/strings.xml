@@ -5,4 +5,12 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="title_activity_screen_recorder">ScreenRecorderActivity</string>
+    <string name="power">Power</string>
+
+    <string name="volume">Vol +</string>
+
+    <string name="scroll">Scroll</string>
+
+    <string name="swipe">Swipe</string>
 </resources>

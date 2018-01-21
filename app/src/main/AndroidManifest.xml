@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.ram.bug_reporter">
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,7 +25,24 @@
         <service
             android:name=".AnotherAppAndOverlayService"
             android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".ScreenRecorderActivity"
+            android:label="@string/title_activity_screen_recorder"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name=".GlobalActionBarService"
+            android:enabled="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/global_action_bar_service" />
             android:exported="true"></service>
     </application>
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
 </manifest>
