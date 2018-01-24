@@ -3,7 +3,9 @@ package com.android.ram.bug_reporter;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.media.AudioManager;
@@ -16,12 +18,17 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GlobalActionBarService extends AccessibilityService {
     FrameLayout mLayout;
+    SharedPreferences UIdata;
+    SharedPreferences.Editor UIdataeditor;
 
     @Override
     protected void onServiceConnected() {
@@ -42,6 +49,9 @@ public class GlobalActionBarService extends AccessibilityService {
         configurePowerButton();
         configureScrollButton();
         configureVolumeButton();
+
+
+
     }
 
     @Override
@@ -59,13 +69,16 @@ public class GlobalActionBarService extends AccessibilityService {
         powerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                performGlobalAction(GLOBAL_ACTION_POWER_DIALOG);
+                //performGlobalAction(GLOBAL_ACTION_POWER_DIALOG);
+                AccessibilityNodeInfo root = getRootInActiveWindow();
+                findAllUIElements(root);
             }
         });
     }
     private AccessibilityNodeInfo findScrollableNode(AccessibilityNodeInfo root) {
         Deque<AccessibilityNodeInfo> deque = new ArrayDeque<>();
         deque.add(root);
+
         while (!deque.isEmpty()) {
             AccessibilityNodeInfo node = deque.removeFirst();
             if (node.getActionList().contains(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD)) {
@@ -75,6 +88,26 @@ public class GlobalActionBarService extends AccessibilityService {
                 deque.addLast(node.getChild(i));
             }
         }
+
+        return null;
+    }
+    private AccessibilityNodeInfo findAllUIElements(AccessibilityNodeInfo root) {
+        Deque<AccessibilityNodeInfo> deque = new ArrayDeque<>();
+        UIdata=getSharedPreferences("UIdata", Context.MODE_PRIVATE);
+        UIdataeditor=UIdata.edit();
+        UIdataeditor.remove("UIdata");
+        Set<String> UIElementsSet=new HashSet<String>();
+        UIdataeditor.commit();
+        deque.add(root);
+        while (!deque.isEmpty()) {
+            AccessibilityNodeInfo node = deque.removeFirst();
+            UIElementsSet.add(node.toString()+"\n========================\n");
+            for (int i = 0; i < node.getChildCount(); i++) {
+                deque.addLast(node.getChild(i));
+            }
+        }
+        UIdataeditor.putStringSet("UIdata",UIElementsSet );
+        UIdataeditor.commit();
         return null;
     }
 

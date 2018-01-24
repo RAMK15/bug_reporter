@@ -39,10 +39,14 @@
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/global_action_bar_service" />
-            android:exported="true"></service>
+            android:exported="true">
+        </service>
+
+        <activity android:name=".AccessibilityTestingActivity"></activity>
     </application>
 
 </manifest>
