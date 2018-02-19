@@ -1,6 +1,7 @@
 package com.android.ram.bug_reporter;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.accessibilityservice.GestureDescription;
 import android.app.Service;
 import android.content.Context;
@@ -17,13 +18,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityRecord;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class GlobalActionBarService extends AccessibilityService {
@@ -32,6 +36,8 @@ public class GlobalActionBarService extends AccessibilityService {
     SharedPreferences.Editor UIdataeditor;
     SharedPreferences EventsCapturedata;
     SharedPreferences.Editor EventsCapturedataeditor;
+    //List<AccessibilityEvent> list_of_events=new ArrayList<AccessibilityEvent>();
+
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
@@ -52,7 +58,15 @@ public class GlobalActionBarService extends AccessibilityService {
         configureScrollButton();
         configureVolumeButton();
         configureSwipeButton();
-
+        //##################################
+        AccessibilityServiceInfo info = new AccessibilityServiceInfo();
+        info.flags = AccessibilityServiceInfo.DEFAULT;
+        info.eventTypes = AccessibilityEvent.TYPE_VIEW_CLICKED|AccessibilityEvent.TYPE_VIEW_LONG_CLICKED | AccessibilityEvent.TYPE_VIEW_FOCUSED
+        | AccessibilityEvent.TYPE_WINDOWS_CHANGED|AccessibilityEvent.TYPE_VIEW_FOCUSED|AccessibilityEvent.TYPE_ANNOUNCEMENT;
+        //info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
+        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
+        this.setServiceInfo(info);
+        //##################################
 
     }
 
@@ -70,7 +84,13 @@ public class GlobalActionBarService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
-        Toast.makeText(GlobalActionBarService.this,"accessibility event :"+accessibilityEvent.toString(),Toast.LENGTH_LONG).show();
+        Toast.makeText(GlobalActionBarService.this,"accessibility event :"
+                +accessibilityEvent.getEventType()+"class:"+accessibilityEvent.getClassName()+
+                "text:"+accessibilityEvent.getText(),Toast.LENGTH_LONG).show();
+       // list_of_events.add(accessibilityEvent);
+        //EventsCapturedataeditor.remove("list_of_events");
+        //EventsCapturedataeditor.putStringSet("list_of_events",list_of_events);
+        /*
         EventsCapturedata=getSharedPreferences("EventsCapturedData",Context.MODE_PRIVATE);
         Boolean isRecording=EventsCapturedata.getBoolean("recording",false);
         if(isRecording){
@@ -82,7 +102,7 @@ public class GlobalActionBarService extends AccessibilityService {
             //Set<String> CapturedEventsSet=new HashSet<String>();
             EventsCapturedataeditor.putStringSet("EventsCapturedData",CapturedEventsSet);
             EventsCapturedataeditor.commit();
-        }
+        }*/
     }
 
     public  void  startRecordingEvents(){
@@ -172,6 +192,7 @@ public class GlobalActionBarService extends AccessibilityService {
         volumeUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 startRecordingEvents();
             }
         });
@@ -185,4 +206,5 @@ public class GlobalActionBarService extends AccessibilityService {
             }
         });
     }
+
 }
