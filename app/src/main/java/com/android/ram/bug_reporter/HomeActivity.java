@@ -59,9 +59,10 @@ public class HomeActivity extends AppCompatActivity
         filelist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent=new Intent(HomeActivity.this,AnotherAppAndOverlayService.class);
-                intent.putExtra("packagename",name[position]);
-                startService(intent);
+                Intent intent=new Intent(HomeActivity.this,BugReportFormActivity.class);
+                //intent.putExtra("packagename",name[position]);
+                //startService(intent);
+                startActivity(intent);
                 //Intent i=getPackageManager().getLaunchIntentForPackage(name[position]);
                 //startActivity(i);
             }

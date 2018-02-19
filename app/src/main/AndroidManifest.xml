@@ -46,7 +46,8 @@
             android:exported="true">
         </service>
 
-        <activity android:name=".AccessibilityTestingActivity"></activity>
+        <activity android:name=".AccessibilityTestingActivity" />
+        <activity android:name=".BugReportFormActivity"></activity>
     </application>
 
 </manifest>

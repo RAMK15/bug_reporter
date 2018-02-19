@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ScrollView01"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="vertical">
+
+    <LinearLayout
+        android:id="@+id/MainLayout"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:background="#ffffaa">
+
+            <TextView
+                android:id="@+id/Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bug Report"
+                android:textAlignment="center"
+                android:background="#00ff00"
+                android:textSize="20pt">
+            </TextView>
+            <EditText
+                android:id="@+id/DeviceInfo"
+                android:layout_height="wrap_content"
+                android:hint="Device Info"
+                android:layout_width="fill_parent">
+            </EditText>
+            <EditText
+                android:id="@+id/OSInfo"
+                android:layout_height="wrap_content"
+                android:hint="OS Info"
+                android:layout_width="fill_parent">
+            </EditText>
+            <EditText
+                android:id="@+id/AppName"
+                android:layout_height="wrap_content"
+                android:hint="App Name"
+                android:layout_width="fill_parent">
+            </EditText>
+            <EditText
+                android:id="@+id/Orientation"
+                android:layout_height="wrap_content"
+                android:hint="Orientationt"
+                android:layout_width="fill_parent">
+            </EditText>
+            <EditText
+                android:id="@+id/BriefDescription"
+                android:layout_height="wrap_content"
+                android:hint="@string/bug_descr_hint"
+                android:layout_width="fill_parent">
+            </EditText>
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/events_sequence"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical">
+            <TextView
+                android:background="#000000"
+                android:textColor="#ffffff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sequence of Events"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#0000ff"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/add_steps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add more steps"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+
+</ScrollView>

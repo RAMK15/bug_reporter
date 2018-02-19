@@ -13,4 +13,5 @@
     <string name="scroll">Scroll</string>
 
     <string name="swipe">Swipe</string>
+    <string name="bug_descr_hint">--What should happen:--\n\n\n--What happens Instead:--</string>
 </resources>

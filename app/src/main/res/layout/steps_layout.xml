@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/steps_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/step_no"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Step 1"/>
+    <EditText
+        android:id="@+id/class_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Button"/>
+    <EditText
+        android:id="@+id/action_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Click"/>
+    <EditText
+        android:id="@+id/location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Location"/>
+</LinearLayout>

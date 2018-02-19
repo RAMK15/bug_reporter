@@ -11,6 +11,7 @@ import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.os.IBinder;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -29,7 +30,8 @@ public class GlobalActionBarService extends AccessibilityService {
     FrameLayout mLayout;
     SharedPreferences UIdata;
     SharedPreferences.Editor UIdataeditor;
-
+    SharedPreferences EventsCapturedata;
+    SharedPreferences.Editor EventsCapturedataeditor;
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
@@ -49,14 +51,56 @@ public class GlobalActionBarService extends AccessibilityService {
         configurePowerButton();
         configureScrollButton();
         configureVolumeButton();
-
+        configureSwipeButton();
 
 
     }
 
     @Override
-    public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
+    protected boolean onGesture(int gestureId) {
+        Toast.makeText(GlobalActionBarService.this,"onGesture"+gestureId,Toast.LENGTH_LONG).show();
+        return super.onGesture(gestureId);
+    }
 
+    @Override
+    protected boolean onKeyEvent(KeyEvent event) {
+        Toast.makeText(GlobalActionBarService.this,"onKeyEvent"+event.toString(),Toast.LENGTH_LONG).show();
+        return super.onKeyEvent(event);
+    }
+
+    @Override
+    public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
+        Toast.makeText(GlobalActionBarService.this,"accessibility event :"+accessibilityEvent.toString(),Toast.LENGTH_LONG).show();
+        EventsCapturedata=getSharedPreferences("EventsCapturedData",Context.MODE_PRIVATE);
+        Boolean isRecording=EventsCapturedata.getBoolean("recording",false);
+        if(isRecording){
+            Set<String> CapturedEventsSet=new HashSet<String>();
+            CapturedEventsSet=EventsCapturedata.getStringSet("EventsCapturedData",CapturedEventsSet);
+            CapturedEventsSet.add(accessibilityEvent.toString());
+            EventsCapturedataeditor=EventsCapturedata.edit();
+            EventsCapturedataeditor.remove("EventsCapturedData");
+            //Set<String> CapturedEventsSet=new HashSet<String>();
+            EventsCapturedataeditor.putStringSet("EventsCapturedData",CapturedEventsSet);
+            EventsCapturedataeditor.commit();
+        }
+    }
+
+    public  void  startRecordingEvents(){
+        Toast.makeText(GlobalActionBarService.this,"start recording events",Toast.LENGTH_LONG).show();
+        EventsCapturedata=getSharedPreferences("EventsCapturedData",Context.MODE_PRIVATE);
+        EventsCapturedataeditor=EventsCapturedata.edit();
+        EventsCapturedataeditor.remove("EventsCapturedData");
+        Set<String> CapturedEventsSet=new HashSet<String>();
+        EventsCapturedataeditor.putStringSet("EventsCapturedData",CapturedEventsSet);
+        EventsCapturedataeditor.putBoolean("recording",true);
+        EventsCapturedataeditor.commit();
+    }
+    public  void  stopRecordingEvents(){
+        Toast.makeText(GlobalActionBarService.this,"stop recording events",Toast.LENGTH_LONG).show();
+        EventsCapturedata=getSharedPreferences("EventsCapturedData",Context.MODE_PRIVATE);
+        EventsCapturedataeditor=EventsCapturedata.edit();
+        EventsCapturedataeditor.putBoolean("recording",false);
+        EventsCapturedataeditor.commit();
     }
 
     @Override
@@ -128,9 +172,16 @@ public class GlobalActionBarService extends AccessibilityService {
         volumeUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
-                        AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+                startRecordingEvents();
+            }
+        });
+    }
+    private void configureSwipeButton() {
+        Button swipeButton = (Button) mLayout.findViewById(R.id.swipe);
+        swipeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopRecordingEvents();
             }
         });
     }
