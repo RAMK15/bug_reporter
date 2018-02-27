@@ -30,15 +30,39 @@
                 android:textSize="20pt">
             </TextView>
             <EditText
-                android:id="@+id/DeviceInfo"
+                android:id="@+id/DeviceName"
                 android:layout_height="wrap_content"
-                android:hint="Device Info"
+                android:hint="Device Name"
+                android:layout_width="fill_parent">
+            </EditText>
+            <EditText
+                android:id="@+id/DeviceManufacturer"
+                android:layout_height="wrap_content"
+                android:hint="Device Manufacturer"
+                android:layout_width="fill_parent">
+            </EditText>
+            <EditText
+                android:id="@+id/DeviceBrand"
+                android:layout_height="wrap_content"
+                android:hint="Device Brand"
+                android:layout_width="fill_parent">
+            </EditText>
+            <EditText
+                android:id="@+id/Device"
+                android:layout_height="wrap_content"
+                android:hint="Device"
                 android:layout_width="fill_parent">
             </EditText>
             <EditText
                 android:id="@+id/OSInfo"
                 android:layout_height="wrap_content"
                 android:hint="OS Info"
+                android:layout_width="fill_parent">
+            </EditText>
+            <EditText
+                android:id="@+id/API"
+                android:layout_height="wrap_content"
+                android:hint="APILevel"
                 android:layout_width="fill_parent">
             </EditText>
             <EditText

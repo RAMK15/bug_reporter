@@ -31,9 +31,10 @@ public class AccessibilityTestingActivity extends AppCompatActivity {
         Set<String> temp=new HashSet<String>();
         UIElementsSet=UIdata.getStringSet("UIdata", temp);
         CapturedEventsSet=EventsCapturedata.getStringSet("EventsCapturedData",temp);
-        String text="";
-        for (String s:UIElementsSet){
-            text=text+s;
+        int step=EventsCapturedata.getInt("step",0);
+        String text="Number of Steps = "+step+"\n";
+        for (String s:CapturedEventsSet){
+            text=text+s+"\n\n";
         }
         t.setText(text);
         t.append("\n=========log========\n");

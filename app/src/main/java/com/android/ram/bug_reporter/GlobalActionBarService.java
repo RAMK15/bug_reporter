@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.media.AudioManager;
 import android.os.IBinder;
 import android.view.Gravity;
@@ -36,6 +37,7 @@ public class GlobalActionBarService extends AccessibilityService {
     SharedPreferences.Editor UIdataeditor;
     SharedPreferences EventsCapturedata;
     SharedPreferences.Editor EventsCapturedataeditor;
+    int step;
     //List<AccessibilityEvent> list_of_events=new ArrayList<AccessibilityEvent>();
 
     @Override
@@ -47,7 +49,7 @@ public class GlobalActionBarService extends AccessibilityService {
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY;
         lp.format = PixelFormat.TRANSLUCENT;
-        lp.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        lp.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.TOP;
@@ -62,12 +64,12 @@ public class GlobalActionBarService extends AccessibilityService {
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
         info.flags = AccessibilityServiceInfo.DEFAULT;
         info.eventTypes = AccessibilityEvent.TYPE_VIEW_CLICKED|AccessibilityEvent.TYPE_VIEW_LONG_CLICKED | AccessibilityEvent.TYPE_VIEW_FOCUSED
-        | AccessibilityEvent.TYPE_WINDOWS_CHANGED|AccessibilityEvent.TYPE_VIEW_FOCUSED|AccessibilityEvent.TYPE_ANNOUNCEMENT;
+        |AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED| AccessibilityEvent.TYPE_WINDOWS_CHANGED|AccessibilityEvent.TYPE_VIEW_FOCUSED|AccessibilityEvent.TYPE_ANNOUNCEMENT;
         //info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
         this.setServiceInfo(info);
         //##################################
-
+        //step=0;
     }
 
     @Override
@@ -84,25 +86,59 @@ public class GlobalActionBarService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
-        Toast.makeText(GlobalActionBarService.this,"accessibility event :"
+        /*Toast.makeText(GlobalActionBarService.this,"accessibility event :"
                 +accessibilityEvent.getEventType()+"class:"+accessibilityEvent.getClassName()+
-                "text:"+accessibilityEvent.getText(),Toast.LENGTH_LONG).show();
-       // list_of_events.add(accessibilityEvent);
-        //EventsCapturedataeditor.remove("list_of_events");
-        //EventsCapturedataeditor.putStringSet("list_of_events",list_of_events);
-        /*
+                "text:"+accessibilityEvent.getText(),Toast.LENGTH_LONG).show();*/
+        //Toast.makeText(GlobalActionBarService.this,""+(accessibilityEvent.getSource()).,Toast.LENGTH_LONG).show();
+
+        //Set<String> CapturedEventsSet=new HashSet<String>();
         EventsCapturedata=getSharedPreferences("EventsCapturedData",Context.MODE_PRIVATE);
         Boolean isRecording=EventsCapturedata.getBoolean("recording",false);
         if(isRecording){
             Set<String> CapturedEventsSet=new HashSet<String>();
+            int nstep=EventsCapturedata.getInt("step",0);
+            EventsCapturedataeditor.remove("step");
+            EventsCapturedataeditor.putInt("step",(nstep+1));
+            EventsCapturedataeditor.commit();
             CapturedEventsSet=EventsCapturedata.getStringSet("EventsCapturedData",CapturedEventsSet);
-            CapturedEventsSet.add(accessibilityEvent.toString());
+
+            String eventType="";
+            int e=accessibilityEvent.getEventType();
+            if(e==1)
+                eventType="Click";
+            else if(e==8)
+                eventType="Focussed";
+            if(e==2)
+                eventType="Long Click";
+            if(e==16384)
+                eventType="AnnounceMent";
+            if(e==4194304 )
+                eventType="Window Changed";
+            if(e==32)
+                eventType="New UI element like Dialog , menu";
+            String className=""+accessibilityEvent.getClassName();
+            String TextPart=""+accessibilityEvent.getText();
+            if(TextPart.length()==0){
+                TextPart=accessibilityEvent.getContentDescription().toString();
+            }
+
+            AccessibilityNodeInfo node=accessibilityEvent.getSource();
+            Rect boundsInParent=new Rect();
+            Rect boundsInScreen=new Rect();
+            node.getBoundsInParent(boundsInParent);
+            node.getBoundsInScreen(boundsInScreen);
+            String eventLoc="boundsInParent : "+boundsInParent+"\nboundsInScreen"+boundsInScreen;
+            String eventDetail=(nstep+1)+"#"+eventType+"#"+className+"#"+TextPart+"#"+eventLoc;
+
+
+            CapturedEventsSet.add(eventDetail);
             EventsCapturedataeditor=EventsCapturedata.edit();
             EventsCapturedataeditor.remove("EventsCapturedData");
             //Set<String> CapturedEventsSet=new HashSet<String>();
             EventsCapturedataeditor.putStringSet("EventsCapturedData",CapturedEventsSet);
             EventsCapturedataeditor.commit();
-        }*/
+            //step++;
+        }
     }
 
     public  void  startRecordingEvents(){
@@ -113,6 +149,8 @@ public class GlobalActionBarService extends AccessibilityService {
         Set<String> CapturedEventsSet=new HashSet<String>();
         EventsCapturedataeditor.putStringSet("EventsCapturedData",CapturedEventsSet);
         EventsCapturedataeditor.putBoolean("recording",true);
+        EventsCapturedataeditor.remove("step");
+        EventsCapturedataeditor.putInt("step",0);
         EventsCapturedataeditor.commit();
     }
     public  void  stopRecordingEvents(){
