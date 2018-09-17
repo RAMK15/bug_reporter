@@ -1,1 +1,1 @@
-This application helps you capture screenshots of an unresponsive application. These screenshots can be used to report a bug.
+This application helps you capture user interactions with android applications so that specific steps leading to a bug or crash can be recorded and displayed as a bug report.It also includes device details and log info to make the bug report more informative and complete.
